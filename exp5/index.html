@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Experiment 5: Java Standalone JDBC CRUD</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #f8fafc; margin: 0; padding: 25px; color: #1e293b; }
+    .container { max-width: 960px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); padding: 30px; }
+    h1 { color: #1e3a8a; margin-top: 0; }
+    .badge { display: inline-block; background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 13px; margin-bottom: 15px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+    @media(max-width:768px){ .grid { grid-template-columns: 1fr; } }
+    .box { background: #f1f5f9; padding: 20px; border-radius: 10px; }
+    .box h3 { margin-top: 0; color: #334155; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 6px; overflow: hidden; }
+    th, td { padding: 10px 12px; border: 1px solid #cbd5e1; text-align: left; font-size: 14px; }
+    th { background: #1e293b; color: white; }
+    input { width: 100%; padding: 8px 12px; margin-bottom: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+    .btn { background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .btn-del { background: #dc2626; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    pre { background: #0f172a; color: #f8fafc; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 13px; line-height: 1.4; max-height: 400px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="badge">Experiment 5</span>
+    <h1>Java Standalone Application with MySQL JDBC – CRUD</h1>
+    <p>Demonstrates Create, Read, Update, and Delete operations using JDBC <code>PreparedStatement</code> and MySQL.</p>
+
+    <div class="grid">
+      <!-- Interactive Web Simulator -->
+      <div class="box">
+        <h3>Live Interactive CRUD Demo</h3>
+        <p style="font-size:13px; color:#64748b;">Simulates the StudentCRUD console menu with browser-backed state:</p>
+        <input id="stuName" placeholder="Student Name (e.g. Ravi)">
+        <input id="stuEmail" placeholder="Email (e.g. ravi@gmail.com)">
+        <input id="stuBranch" placeholder="Branch (e.g. CSE)">
+        <button class="btn" onclick="addStudent()">1. Create (Insert Student)</button>
+
+        <table id="studentTable">
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Email</th><th>Branch</th><th>Action</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Java Source Code Viewer -->
+      <div class="box">
+        <h3>StudentCRUD.java (Source Code)</h3>
+        <pre><code>import java.sql.*;
+import java.util.*;
+
+public class StudentCRUD {
+ static final String URL="jdbc:mysql://localhost:3306/college";
+ static final String USER="root", PASS="root";
+ static Scanner sc = new Scanner(System.in);
+
+ static Connection connect() throws SQLException {
+   return DriverManager.getConnection(URL,USER,PASS);
+ }
+
+ static void create() throws Exception {
+   System.out.print("Name: "); String n = sc.nextLine();
+   System.out.print("Email: "); String e = sc.nextLine();
+   System.out.print("Branch: "); String b = sc.nextLine();
+   String sql="INSERT INTO student(name,email,branch) VALUES(?,?,?)";
+   try(Connection c=connect(); PreparedStatement p=c.prepareStatement(sql)){
+     p.setString(1,n); p.setString(2,e); p.setString(3,b);
+     p.executeUpdate();
+     System.out.println("Student inserted.");
+   }
+ }
+ // ... read(), update(), delete() ...
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let students = JSON.parse(localStorage.getItem("exp5_students") || '[{"id":1,"name":"Ravi","email":"ravi@gmail.com","branch":"CSE"},{"id":2,"name":"Sita","email":"sita@gmail.com","branch":"AI&DS"}]');
+
+    function render() {
+      const tbody = document.querySelector("#studentTable tbody");
+      tbody.innerHTML = students.map(s => `
+        <tr>
+          <td>${s.id}</td>
+          <td>${s.name}</td>
+          <td>${s.email}</td>
+          <td>${s.branch}</td>
+          <td><button class="btn-del" onclick="del(${s.id})">Delete</button></td>
+        </tr>
+      `).join("") || '<tr><td colspan="5" style="text-align:center;">No students found</td></tr>';
+      localStorage.setItem("exp5_students", JSON.stringify(students));
+    }
+
+    function addStudent() {
+      const n = document.getElementById("stuName").value.trim();
+      const e = document.getElementById("stuEmail").value.trim();
+      const b = document.getElementById("stuBranch").value.trim();
+      if(!n || !e || !b) return alert("Fill in name, email, and branch");
+      students.push({ id: Date.now() % 1000, name: n, email: e, branch: b });
+      document.getElementById("stuName").value = "";
+      document.getElementById("stuEmail").value = "";
+      document.getElementById("stuBranch").value = "";
+      render();
+    }
+
+    function del(id) {
+      students = students.filter(s => s.id !== id);
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>

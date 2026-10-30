@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Experiment 3: Client-Side Validation</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #f0f4f8; margin: 0; padding: 20px; color: #1e293b; }
+    .container { max-width: 800px; margin: 20px auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 30px; }
+    h1 { color: #1e3a8a; margin-top: 0; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; }
+    .tab-btn { padding: 10px 20px; border: none; background: none; font-size: 16px; font-weight: 600; cursor: pointer; color: #64748b; border-bottom: 3px solid transparent; }
+    .tab-btn.active { color: #2563eb; border-bottom-color: #2563eb; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+    input { width: 100%; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 15px; transition: border-color 0.2s; }
+    input:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+    .error { color: #dc2626; font-size: 13px; font-weight: 500; display: block; margin-top: 5px; min-height: 18px; }
+    .btn { background: #2563eb; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #1d4ed8; }
+    .card { background: #f8fafc; border-left: 4px solid #2563eb; padding: 15px; margin-top: 25px; border-radius: 0 8px 8px 0; }
+    .nav-links { display: flex; gap: 15px; margin-top: 20px; }
+    .nav-links a { color: #2563eb; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Experiment 3: Client-Side Validation</h1>
+    <p>Tests regex validation rules for names (min 3 chars), email syntax, and strong passwords (min 6 chars with letters & numbers).</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('reg')">Registration Form</button>
+      <button class="tab-btn" onclick="showTab('login')">Login Form</button>
+    </div>
+
+    <!-- Registration -->
+    <div id="regTab">
+      <form id="regForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input id="name" placeholder="e.g. Abhay Sharma">
+          <span class="error" id="nameErr"></span>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input id="email" placeholder="student@example.com">
+          <span class="error" id="emailErr"></span>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input id="password" type="password" placeholder="At least 6 chars with letter and number">
+          <span class="error" id="passErr"></span>
+        </div>
+        <button class="btn" type="submit">Validate & Register</button>
+      </form>
+    </div>
+
+    <!-- Login -->
+    <div id="loginTab" style="display:none;">
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input id="logEmail" placeholder="student@example.com">
+          <span class="error" id="logEmailErr"></span>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input id="logPassword" type="password" placeholder="Your password">
+          <span class="error" id="logPassErr"></span>
+        </div>
+        <button class="btn" type="submit">Validate & Login</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <strong>Validation Rules:</strong>
+      <ul>
+        <li>Name: Minimum 3 characters</li>
+        <li>Email: Standard RFC email format (contains @ and .)</li>
+        <li>Password: Minimum 6 characters with at least one letter and one number</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function showTab(t) {
+      document.getElementById('regTab').style.display = t === 'reg' ? 'block' : 'none';
+      document.getElementById('loginTab').style.display = t === 'login' ? 'block' : 'none';
+      document.querySelectorAll('.tab-btn')[0].classList.toggle('active', t === 'reg');
+      document.querySelectorAll('.tab-btn')[1].classList.toggle('active', t === 'login');
+    }
+
+    document.getElementById("regForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      document.querySelectorAll("#regTab .error").forEach(s => s.textContent = "");
+      let ok = true;
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const pass = document.getElementById("password").value;
+
+      if(name.length < 3) { document.getElementById("nameErr").textContent = "Name must contain at least 3 characters."; ok = false; }
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById("emailErr").textContent = "Invalid email address format."; ok = false; }
+      if(!/^(?=.*[A-Za-z])(?=.*\d).{6,}$/.test(pass)) { document.getElementById("passErr").textContent = "Minimum 6 characters with at least 1 letter and 1 number."; ok = false; }
+
+      if(ok) alert("Registration validation successful! Form is ready to submit.");
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      document.querySelectorAll("#loginTab .error").forEach(s => s.textContent = "");
+      let ok = true;
+      const email = document.getElementById("logEmail").value.trim();
+      const pass = document.getElementById("logPassword").value;
+
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById("logEmailErr").textContent = "Invalid email address."; ok = false; }
+      if(!pass) { document.getElementById("logPassErr").textContent = "Password cannot be empty."; ok = false; }
+
+      if(ok) alert("Login validation successful!");
+    });
+  </script>
+</body>
+</html>

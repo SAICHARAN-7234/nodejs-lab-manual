@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Experiment 8: Session Tracking using Cookies & HttpSession</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #f8fafc; margin: 0; padding: 25px; color: #1e293b; }
+    .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); padding: 30px; }
+    h1 { color: #1e3a8a; margin-top: 0; }
+    .badge { display: inline-block; background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 13px; margin-bottom: 15px; }
+    .card { background: #f1f5f9; padding: 20px; border-radius: 10px; margin-top: 20px; }
+    .counter { font-size: 42px; font-weight: 800; color: #2563eb; margin: 10px 0; }
+    .btn { background: #2563eb; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-right: 10px; }
+    .btn-reset { background: #64748b; }
+    pre { background: #0f172a; color: #f8fafc; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 12px; margin-top: 20px; }
+    .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #cbd5e1; font-size: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="badge">Experiment 8</span>
+    <h1>Session Tracking using Cookies and HTTP Session</h1>
+    <p>Demonstrates tracking user visits across requests using browser Cookies and server-side HTTP Session attributes.</p>
+
+    <div class="card">
+      <h3>Live Session Tracking Demo</h3>
+      <div class="counter" id="visitCount">Visit #1</div>
+      <div class="info-row">
+        <span><strong>Cookie Name:</strong> <code>student</code></span>
+        <span><strong>Cookie Value:</strong> <code id="cookieVal">Ravi</code></span>
+      </div>
+      <div class="info-row">
+        <span><strong>Session ID (JSESSIONID):</strong></span>
+        <span><code id="sessionId">JSESS_8F3A29B10C4</code></span>
+      </div>
+      <div class="info-row">
+        <span><strong>Cookie Max-Age:</strong></span>
+        <span><code>3600 seconds (1 hour)</code></span>
+      </div>
+      <div style="margin-top:20px;">
+        <button class="btn" onclick="simulateVisit()">Simulate Page Refresh (+1 Visit)</button>
+        <button class="btn btn-reset" onclick="resetSession()">Invalidate Session</button>
+      </div>
+    </div>
+
+    <h3>Servlet Implementation (SessionServlet.java)</h3>
+    <pre><code>@WebServlet("/session")
+public class SessionServlet extends HttpServlet {
+ protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+  res.setContentType("text/html");
+  HttpSession session = req.getSession();
+  Integer count = (Integer)session.getAttribute("count");
+  count = (count == null) ? 1 : count + 1;
+  session.setAttribute("count", count);
+
+  Cookie cookie = new Cookie("student", "Ravi");
+  cookie.setMaxAge(3600);
+  res.addCookie(cookie);
+
+  try(PrintWriter out = res.getWriter()){
+   out.println("&lt;h2&gt;Session Tracking Demo&lt;/h2&gt;");
+   out.println("&lt;p&gt;HTTP Session visit count: " + count + "&lt;/p&gt;");
+   out.println("&lt;p&gt;Cookie 'student' has been sent with value: Ravi&lt;/p&gt;");
+   out.println("&lt;p&gt;Session ID: " + session.getId() + "&lt;/p&gt;");
+  }
+ }
+}</code></pre>
+  </div>
+
+  <script>
+    let count = parseInt(sessionStorage.getItem("exp8_count") || "1");
+    let sessId = sessionStorage.getItem("exp8_sess") || "JSESS_" + Math.random().toString(36).substring(2, 12).toUpperCase();
+    sessionStorage.setItem("exp8_sess", sessId);
+
+    function update() {
+      document.getElementById("visitCount").textContent = "Visit #" + count;
+      document.getElementById("sessionId").textContent = sessId;
+      sessionStorage.setItem("exp8_count", count);
+      document.cookie = "student=Ravi; max-age=3600; path=/";
+    }
+
+    function simulateVisit() {
+      count++;
+      update();
+    }
+
+    function resetSession() {
+      count = 1;
+      sessId = "JSESS_" + Math.random().toString(36).substring(2, 12).toUpperCase();
+      sessionStorage.setItem("exp8_sess", sessId);
+      update();
+      alert("Session invalidated. New session created.");
+    }
+
+    update();
+  </script>
+</body>
+</html>

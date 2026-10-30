@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NodeJS Lab Manual — All 14 Experiments (Cloud Edition)</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #0b1120; color: #f8fafc; margin: 0; padding: 25px 15px; }
+    .container { max-width: 1150px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 25px; }
+    h1 { font-size: 30px; margin: 0 0 8px 0; color: #38bdf8; font-weight: 800; }
+    p.sub { font-size: 15px; color: #94a3b8; margin: 0 0 20px; }
+    
+    .status-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid #10b981;
+      border-radius: 16px;
+      padding: 18px 24px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);
+    }
+    .status-title { font-size: 16px; font-weight: 700; color: #a7f3d0; display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 10px; height: 10px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #34d399; }
+    .status-desc { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+
+    table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+    th { padding: 12px 14px; color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; text-align: left; }
+    tr.exp-row { background: #1e293b; transition: all 0.15s; }
+    tr.exp-row:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    td { padding: 14px 16px; border-top: 1px solid #334155; border-bottom: 1px solid #334155; }
+    td:first-child { border-left: 1px solid #334155; border-top-left-radius: 10px; border-bottom-left-radius: 10px; font-weight: 800; color: #38bdf8; width: 45px; }
+    td:last-child { border-right: 1px solid #334155; border-top-right-radius: 10px; border-bottom-right-radius: 10px; text-align: right; }
+    
+    .exp-name { font-size: 15px; font-weight: 600; color: #ffffff; }
+    .exp-desc { font-size: 13px; color: #94a3b8; margin-top: 3px; }
+    .badge { display: inline-block; background: #334155; color: #e2e8f0; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-family: monospace; margin-left: 6px; }
+    
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #2563eb;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-launch:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Web Application Development Laboratory</h1>
+      <p class="sub">Complete 14 Experiments Suite — 24/7 Cloud Hosted Edition</p>
+    </header>
+
+    <div class="status-card">
+      <div>
+        <div class="status-title"><span class="status-dot"></span> 24/7 Cloud Active</div>
+        <div class="status-desc">Accessible from any mobile phone, tablet, or PC worldwide at any time — even with your local PC powered off.</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Experiment Details</th>
+          <th style="text-align:right;">Open App</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="exp-row">
+          <td>01</td>
+          <td><div class="exp-name">Responsive Shopping Cart <span class="badge">HTML5/CSS3</span></div><div class="exp-desc">CSS3 Flexbox, Grid layout, and local storage cart calculations.</div></td>
+          <td><a class="btn-launch" href="./exp1/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>02</td>
+          <td><div class="exp-name">Bootstrap 5 Shopping Cart <span class="badge">Bootstrap 5</span></div><div class="exp-desc">Bootstrap 5 responsive cards, badges, navigation, and cart.</div></td>
+          <td><a class="btn-launch" href="./exp2/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>03</td>
+          <td><div class="exp-name">Client-Side Validation <span class="badge">JavaScript</span></div><div class="exp-desc">JavaScript RegEx form validation (Name, Email, Password, Phone).</div></td>
+          <td><a class="btn-launch" href="./exp3/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>04</td>
+          <td><div class="exp-name">ES6 Weather Graph <span class="badge">Chart.js / ES6</span></div><div class="exp-desc">ES6 Promises, Async/Await & Chart.js temperature visualization.</div></td>
+          <td><a class="btn-launch" href="./exp4/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>05</td>
+          <td><div class="exp-name">Java JDBC CRUD Showcase <span class="badge">Java / MySQL</span></div><div class="exp-desc">MySQL PreparedStatement CRUD with interactive web simulator.</div></td>
+          <td><a class="btn-launch" href="./exp5/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>06</td>
+          <td><div class="exp-name">Bookstore XML Validation <span class="badge">XML / DTD / XSD</span></div><div class="exp-desc">XML Schema, DTD and XSD grammar and syntax validation.</div></td>
+          <td><a class="btn-launch" href="./exp6/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>07</td>
+          <td><div class="exp-name">Product Servlet Controller <span class="badge">Jakarta Servlet</span></div><div class="exp-desc">Servlet GET Catalog & POST product insertion simulator.</div></td>
+          <td><a class="btn-launch" href="./exp7/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>08</td>
+          <td><div class="exp-name">Session & Cookie Tracking <span class="badge">HttpSession</span></div><div class="exp-desc">Live Hit Counter, Cookie Max-Age & Session ID showcase.</div></td>
+          <td><a class="btn-launch" href="./exp8/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>09</td>
+          <td><div class="exp-name">Custom Node.js Server <span class="badge">Node.js Core</span></div><div class="exp-desc">Node.js core modules: http, os, path, and EventEmitter server.</div></td>
+          <td><a class="btn-launch" href="./exp9/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>10</td>
+          <td><div class="exp-name">Express REST API <span class="badge">Express REST</span></div><div class="exp-desc">Student REST API with integrated interactive web tester.</div></td>
+          <td><a class="btn-launch" href="./exp10/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>11</td>
+          <td><div class="exp-name">JWT Authentication API <span class="badge">JWT / Auth</span></div><div class="exp-desc">JWT Login (Admin123), Bearer token verification and tester.</div></td>
+          <td><a class="btn-launch" href="./exp11/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>12</td>
+          <td><div class="exp-name">React Student Management <span class="badge">React 18</span></div><div class="exp-desc">React 18 SPA with React Router DOM multi-page navigation.</div></td>
+          <td><a class="btn-launch" href="./exp12/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>13</td>
+          <td><div class="exp-name">React Weather Service <span class="badge">React / Chart.js</span></div><div class="exp-desc">React service architecture with dynamic Chart.js forecasts.</div></td>
+          <td><a class="btn-launch" href="./exp13/" target="_blank">Open Live ↗</a></td>
+        </tr>
+        <tr class="exp-row">
+          <td>14</td>
+          <td><div class="exp-name">React TODO Application <span class="badge">React State</span></div><div class="exp-desc">State-driven React TODO application with toggle & delete.</div></td>
+          <td><a class="btn-launch" href="./exp14/" target="_blank">Open Live ↗</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

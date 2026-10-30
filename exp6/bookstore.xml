@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE bookstore SYSTEM "bookstore.dtd">
+<bookstore xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="bookstore.xsd">
+ <book id="B101">
+   <title>Node.js Fundamentals</title><author>John Smith</author>
+   <price>550</price><year>2026</year>
+ </book>
+ <book id="B102">
+   <title>Learning React</title><author>Mary Jones</author>
+   <price>650</price><year>2026</year>
+ </book>
+</bookstore>

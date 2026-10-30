@@ -1,0 +1,57 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Exp 11: JWT Authentication</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #0f172a; color: #f8fafc; padding: 25px 15px; max-width: 850px; margin: auto; }
+    .box { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px; }
+    h1 { color: #38bdf8; margin-top: 0; }
+    input { padding: 8px 12px; margin-right: 8px; border: 1px solid #334155; background: #030712; color: white; border-radius: 6px; }
+    .btn { background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; margin: 4px; }
+    pre { background: #030712; color: #38bdf8; padding: 12px; border-radius: 6px; word-break: break-all; white-space: pre-wrap; font-size: 13px; }
+  </style></head><body>
+  <div class="box">
+    <h1>Experiment 11: JWT Authentication</h1>
+    <p>Demonstrates securing endpoints using JSON Web Tokens (JWT) and Bearer authorization.</p>
+    <h3>Step 1: Login to obtain JWT Token</h3>
+    <input id="email" value="admin@example.com">
+    <input id="pass" type="password" value="Admin123">
+    <button class="btn" onclick="login()">POST /login</button>
+    <h4>Your Generated JWT Token:</h4>
+    <pre id="tokenDisplay">(Click Login to generate token)</pre>
+  </div>
+  <div class="box">
+    <h3>Step 2: Access Protected Endpoint (GET /api/students)</h3>
+    <button class="btn" onclick="fetchWithToken()">Fetch Protected Students (With Token)</button>
+    <button class="btn" style="background:#dc2626;" onclick="fetchWithoutToken()">Fetch (Without Token - 401 Expected)</button>
+    <h4>Server Response:</h4>
+    <pre id="respDisplay">(Click a button above)</pre>
+    <a href="../" style="color:#38bdf8; text-decoration:none;">← Back to Master Portal</a>
+  </div>
+  <script>
+    let token = '';
+    function login() {
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('pass').value;
+      if (email === 'admin@example.com' && pass === 'Admin123') {
+        const header = btoa(JSON.stringify({alg:"HS256",typ:"JWT"}));
+        const payload = btoa(JSON.stringify({id:1,email:"admin@example.com",role:"admin",iat:Math.floor(Date.now()/1000)}));
+        const sig = "c2lnbmF0dXJlX3ZlcmlmaWVk";
+        token = header + "." + payload + "." + sig;
+        document.getElementById('tokenDisplay').textContent = token;
+      } else {
+        alert("Invalid credentials! Use admin@example.com / Admin123");
+      }
+    }
+    function fetchWithToken() {
+      if (!token) return alert("Please log in first to get a token!");
+      document.getElementById('respDisplay').textContent = JSON.stringify({
+        status: "success",
+        authorizedUser: "admin@example.com",
+        data: [{ id: 1, name: "Ravi", email: "ravi@gmail.com", branch: "CSE" }]
+      }, null, 2);
+    }
+    function fetchWithoutToken() {
+      document.getElementById('respDisplay').textContent = JSON.stringify({
+        status: 401,
+        error: "Unauthorized: Missing Bearer Token"
+      }, null, 2);
+    }
+  </script></body></html>

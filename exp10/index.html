@@ -1,0 +1,48 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Exp 10: Express REST API</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #0f172a; color: #f8fafc; padding: 25px 15px; max-width: 850px; margin: auto; }
+    .box { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px; }
+    h1 { color: #38bdf8; margin-top: 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 10px; border: 1px solid #334155; text-align: left; }
+    th { background: #0f172a; color: #38bdf8; }
+    input { padding: 8px 12px; margin-right: 8px; margin-bottom: 8px; border: 1px solid #334155; background: #030712; color: white; border-radius: 6px; }
+    .btn { background: #2563eb; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .btn-del { background: #dc2626; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+    pre { background: #030712; color: #38bdf8; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 13px; }
+  </style></head><body>
+  <div class="box">
+    <h1>Experiment 10: Express REST API</h1>
+    <p>Provides RESTful CRUD endpoints for students. Fully interactive cloud simulator.</p>
+    <div>
+      <input id="name" placeholder="Name">
+      <input id="email" placeholder="Email">
+      <input id="branch" placeholder="Branch">
+      <button class="btn" onclick="add()">POST /api/students</button>
+    </div>
+    <table id="tbl"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Branch</th><th>Action</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="box">
+    <h3>Raw JSON Response (GET /api/students)</h3>
+    <pre id="raw">Loading...</pre>
+    <a href="../" style="color:#38bdf8; text-decoration:none;">← Back to Master Portal</a>
+  </div>
+  <script>
+    let students = JSON.parse(localStorage.getItem('exp10_students') || '[{"id":1,"name":"Ravi","email":"ravi@gmail.com","branch":"CSE"},{"id":2,"name":"Sita","email":"sita@gmail.com","branch":"AI&DS"}]');
+    function save(){ localStorage.setItem('exp10_students', JSON.stringify(students)); load(); }
+    function load(){
+      document.getElementById('raw').textContent = JSON.stringify(students, null, 2);
+      document.querySelector('#tbl tbody').innerHTML = students.map(s=>'<tr><td>'+s.id+'</td><td>'+s.name+'</td><td>'+s.email+'</td><td>'+s.branch+'</td><td><button class="btn-del" onclick="del('+s.id+')">DELETE</button></td></tr>').join('');
+    }
+    function add(){
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const branch = document.getElementById('branch').value;
+      if(!name) return alert('Name required');
+      students.push({ id: Date.now(), name, email, branch });
+      document.getElementById('name').value=''; document.getElementById('email').value=''; document.getElementById('branch').value='';
+      save();
+    }
+    function del(id){ students = students.filter(s=>s.id !== id); save(); }
+    load();
+  </script></body></html>

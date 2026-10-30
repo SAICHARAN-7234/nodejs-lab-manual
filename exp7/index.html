@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Experiment 7: Servlet Controller & JDBC</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #f8fafc; margin: 0; padding: 25px; color: #1e293b; }
+    .container { max-width: 960px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); padding: 30px; }
+    h1 { color: #1e3a8a; margin-top: 0; }
+    .badge { display: inline-block; background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 13px; margin-bottom: 15px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+    @media(max-width:768px){ .grid { grid-template-columns: 1fr; } }
+    .box { background: #f1f5f9; padding: 20px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+    th, td { padding: 10px; border: 1px solid #cbd5e1; text-align: left; font-size: 14px; }
+    th { background: #1e293b; color: white; }
+    input { width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1; border-radius: 6px; }
+    .btn { background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    pre { background: #0f172a; color: #f8fafc; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 12px; max-height: 380px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="badge">Experiment 7</span>
+    <h1>Servlet Controller for Interaction between Web Application and Database</h1>
+    <p>Demonstrates a Jakarta Servlet (<code>ProductServlet</code>) handling HTTP GET to read products and POST to insert products into MySQL <code>shopdb.product</code>.</p>
+
+    <div class="grid">
+      <div class="box">
+        <h3>Live Servlet Controller Simulation</h3>
+        <p style="font-size:13px; color:#64748b;">Simulates <code>doPost()</code> insert and <code>doGet()</code> catalog table:</p>
+        <form onsubmit="addProduct(event)">
+          <input id="pName" placeholder="Product Name (e.g. Mouse)" required>
+          <input id="pPrice" type="number" step="0.01" placeholder="Price in ₹ (e.g. 600)" required>
+          <button class="btn" type="submit">Submit (POST /products)</button>
+        </form>
+
+        <h4 style="margin-top:20px;">Product Catalog (GET /products)</h4>
+        <table id="pTable">
+          <thead><tr><th>ID</th><th>Name</th><th>Price</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="box">
+        <h3>ProductServlet.java</h3>
+        <pre><code>@WebServlet("/products")
+public class ProductServlet extends HttpServlet {
+ static final String URL="jdbc:mysql://localhost:3306/shopdb";
+ static final String USER="root", PASS="root";
+
+ protected void doGet(HttpServletRequest req,HttpServletResponse res)throws IOException{
+  res.setContentType("text/html");
+  try(PrintWriter out=res.getWriter();Connection c=DriverManager.getConnection(URL,USER,PASS);
+      Statement s=c.createStatement();ResultSet r=s.executeQuery("SELECT * FROM product")){
+    out.println("&lt;h2&gt;Product Catalog&lt;/h2&gt;&lt;table border='1'&gt;");
+    out.println("&lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Price&lt;/th&gt;&lt;/tr&gt;");
+    while(r.next()) out.printf("&lt;tr&gt;&lt;td&gt;%d&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%.2f&lt;/td&gt;&lt;/tr&gt;",
+      r.getInt("id"),r.getString("name"),r.getDouble("price"));
+    out.println("&lt;/table&gt;");
+  }catch(Exception e){res.getWriter().println(e.getMessage());}
+ }
+
+ protected void doPost(HttpServletRequest req,HttpServletResponse res)throws IOException{
+  String name=req.getParameter("name");
+  double price=Double.parseDouble(req.getParameter("price"));
+  try(Connection c=DriverManager.getConnection(URL,USER,PASS);
+      PreparedStatement p=c.prepareStatement("INSERT INTO product(name,price) VALUES(?,?)")){
+    p.setString(1,name);p.setDouble(2,price);p.executeUpdate();
+    res.sendRedirect("products");
+  }catch(Exception e){res.getWriter().println(e.getMessage());}
+ }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let products = JSON.parse(localStorage.getItem("exp7_products") || '[{"id":1,"name":"Laptop","price":55000.00},{"id":2,"name":"Keyboard","price":1200.00}]');
+
+    function render() {
+      const tbody = document.querySelector("#pTable tbody");
+      tbody.innerHTML = products.map(p => `<tr><td>${p.id}</td><td>${p.name}</td><td>₹${Number(p.price).toFixed(2)}</td></tr>`).join("");
+      localStorage.setItem("exp7_products", JSON.stringify(products));
+    }
+
+    function addProduct(e) {
+      e.preventDefault();
+      const n = document.getElementById("pName").value.trim();
+      const pr = parseFloat(document.getElementById("pPrice").value);
+      products.push({ id: products.length + 1, name: n, price: pr });
+      document.getElementById("pName").value = "";
+      document.getElementById("pPrice").value = "";
+      render();
+    }
+    render();
+  </script>
+</body>
+</html>
